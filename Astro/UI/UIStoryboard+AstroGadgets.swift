@@ -1,4 +1,4 @@
-//  Copyright © 2016 Robots and Pencils, Inc. All rights reserved.
+//  Copyright © 2018 Robots and Pencils, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 //
@@ -10,40 +10,12 @@
 //
 
 import UIKit
-import MapKit
 
-// MARK: - Identifiable
-
-public protocol Identifiable {
-    static var identifier: String { get }
-}
-
-public extension Identifiable {
-    static var identifier: String {
-        return String(describing: self)
+public extension UIStoryboard {
+    func instantiateView<View: UIViewController>(ofType type: View.Type) -> View {
+        guard let view = instantiateViewController(withIdentifier: type.identifier) as? View else {
+            fatalError("Could not instantiate view with identifier: \(type.identifier)")
+        }
+        return view
     }
-}
-
-extension UIViewController: Identifiable {}
-
-// MARK: - Reusable
-
-public protocol Reusable: Identifiable {
-    static var reuseIdentifier: String { get }
-}
-
-public extension Reusable {
-    static var reuseIdentifier: String {
-        return identifier
-    }
-}
-
-extension UITableViewCell: Reusable {}
-extension UICollectionViewCell: Reusable {}
-extension MKAnnotationView: Reusable {}
-
-// MARK: - ReusableCell
-
-public protocol ReusableCell: Reusable {
-    static var estimatedSize: CGSize { get }
 }

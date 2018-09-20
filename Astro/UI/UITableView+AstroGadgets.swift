@@ -20,8 +20,8 @@ public extension UITableView {
      
      - parameter cellType: The cell subclass type that conforms to the ReusableView protocol
      */
-    public func register<T: UITableViewCell>(_ cellType: T.Type) where T: ReusableView {
-        self.register(cellType.self, forCellReuseIdentifier: cellType.defaultReuseIdentifier)
+    public func registerCell<Cell: UITableViewCell>(ofType type: Cell.Type) where Cell: ReusableCell {
+        register(type.self, forCellReuseIdentifier: type.reuseIdentifier)
     }
     
     /**
@@ -30,10 +30,8 @@ public extension UITableView {
      
      - parameter cellType: The cell subclass type that conforms to both ReusableView and NibLoadableView protocols
      */
-    public func register<T: UITableViewCell>(_ cellType: T.Type) where T: ReusableView, T: NibLoadableView {
-        let bundle = Bundle(for: cellType.self)
-        let nib = UINib(nibName: cellType.nibName, bundle: bundle)
-        self.register(nib, forCellReuseIdentifier: cellType.defaultReuseIdentifier)
+    public func registerCell<Cell: UITableViewCell>(ofType type: Cell.Type) where Cell: ReusableCell, Cell: NibLoadableView {
+        register(type.nib, forCellReuseIdentifier: type.reuseIdentifier)
     }
     
     /**
@@ -43,9 +41,9 @@ public extension UITableView {
      
      - parameter indexPath: The index path of the cell to dequeue
      */
-    public func dequeueReusableCell<T: UITableViewCell>(forIndexPath indexPath: IndexPath) -> T where T: ReusableView {
-        guard let cell = self.dequeueReusableCell(withIdentifier: T.defaultReuseIdentifier, for: indexPath) as? T else {
-            fatalError("Could not dequeue table view cell with identifier: \(T.defaultReuseIdentifier)")
+    public func dequeueReusableCell<Cell: UITableViewCell>(for indexPath: IndexPath) -> Cell where Cell: ReusableCell {
+        guard let cell = dequeueReusableCell(withIdentifier: Cell.reuseIdentifier, for: indexPath) as? Cell else {
+            fatalError("Could not dequeue table view cell with identifier: \(Cell.reuseIdentifier)")
         }
         return cell
     }
